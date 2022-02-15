@@ -19,6 +19,7 @@
     <h3><a href="index.html">Home</a></h3>
     <h1>Meals</h1>
 
+    <h4><a href="addUser.jsp"> Add User </a></h4>
 
     <table border="2">
 
@@ -32,6 +33,7 @@
                         <td><c:out value="${meal.dateTime}"/></td>
                         <td><c:out value="${meal.description}" /> </td>
                         <td><c:out value="${meal.calories}" />  </td>
+                        <td><a href="meals?action=delete&id=${meal.id}">Delete</a><td>
                     <tr>
                 </c:when>
                 <c:otherwise>
@@ -39,6 +41,7 @@
                         <td><c:out value="${meal.dateTime}" /> </td>
                         <td><c:out value="${meal.description}" /> </td>
                         <td><c:out value="${meal.calories}" />  </td>
+                        <td><a href="meals?action=delete&id=${meal.id}">Delete</a><td>
                     <tr>
                 </c:otherwise>
             </c:choose>
