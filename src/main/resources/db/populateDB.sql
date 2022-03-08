@@ -16,4 +16,22 @@ VALUES ('USER', 100000),
 INSERT INTO meals (user_id, description, calories)
 VALUES
 
-       (100001, 'test2', 820)
+       (100000, 'Food1', 820);
+SELECT pg_sleep(1);
+
+INSERT INTO meals (user_id, description, calories)
+VALUES
+
+    (100001, 'Food2', 500);
+
+SELECT pg_sleep(1);
+
+INSERT INTO meals (user_id, description, calories)
+VALUES
+
+    (100001, 'Food3', 400);
+
+INSERT INTO meals (user_id, description, datetime, calories)
+VALUES
+
+    (100000, 'Food4', '2022-02-24 00:00' , 300);
