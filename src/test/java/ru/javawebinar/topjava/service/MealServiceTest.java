@@ -1,18 +1,27 @@
 package ru.javawebinar.topjava.service;
 
-import org.junit.Test;
+import org.junit.*;
+import org.junit.rules.Stopwatch;
+import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Role;
 import org.springframework.dao.DataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.SqlConfig;
 import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.util.StopWatch;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.util.exception.NotFoundException;
 
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.MealTestData.*;
@@ -27,13 +36,65 @@ import static ru.javawebinar.topjava.UserTestData.USER_ID;
 @Sql(scripts = "classpath:db/populateDB.sql", config = @SqlConfig(encoding = "UTF-8"))
 public class MealServiceTest {
 
+    private static final Logger LOG = LoggerFactory.getLogger(MealServiceTest.class);
+
     @Autowired
     private MealService service;
+
+    private static Map<String, Long> map;
+
+    @BeforeClass
+    public static void initMap() {
+        map = new HashMap<>();
+    }
+
+    @AfterClass
+    public static void showTestReports() {
+        for(String testNames : map.keySet()) {
+            LOG.info("Test " + testNames + " finished for " + map.get(testNames) + " ms");
+        }
+    }
+
+    @Rule
+    public Stopwatch stopWatch = new Stopwatch() {
+        @Override
+        protected void succeeded(long nanos, Description description) {
+            super.succeeded(nanos, description);
+            logInfo(nanos, "succeeded", description);
+        }
+
+        @Override
+        protected void failed(long nanos, Throwable e, Description description) {
+            super.failed(nanos, e, description);
+            logInfo(nanos, "failed", description);
+        }
+
+        @Override
+        protected void finished(long nanos, Description description) {
+            super.finished(nanos, description);
+            logInfo(nanos, "finished", description);
+        }
+
+        @Override
+        protected void skipped(long nanos, AssumptionViolatedException e, Description description) {
+            super.skipped(nanos, e, description);
+            logInfo(nanos, "skipped", description);
+        }
+    };
+
+    public void logInfo(long nanos, String status, Description description) {
+        long millis = TimeUnit.NANOSECONDS.toMillis(nanos);
+        map.put(description.getMethodName(), millis);
+        LOG.info("Test " + description.getMethodName() + " was " + status + " for " +
+                millis + " milliseconds");
+    }
+
 
     @Test
     public void delete() {
         service.delete(MEAL1_ID, USER_ID);
         assertThrows(NotFoundException.class, () -> service.get(MEAL1_ID, USER_ID));
+
     }
 
     @Test
