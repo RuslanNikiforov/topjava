@@ -24,7 +24,7 @@ public abstract class MealServiceTest extends AbstractServiceTest{
 
 
     @Autowired
-    private MealService service;
+    protected MealService service;
 
     @AfterClass
     public static void printResult() {

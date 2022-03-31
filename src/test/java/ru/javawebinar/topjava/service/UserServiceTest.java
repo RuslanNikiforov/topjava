@@ -17,12 +17,10 @@ import java.util.List;
 import static org.junit.Assert.assertThrows;
 import static ru.javawebinar.topjava.UserTestData.*;
 
-
-@ActiveProfiles(profiles = {"postgres", "datajpa"})
 public class UserServiceTest extends AbstractServiceTest {
 
     @Autowired
-    private UserService service;
+    protected UserService service;
 
 
     @Autowired
